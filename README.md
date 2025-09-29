@@ -10,6 +10,7 @@ Backend completo desarrollado en Spring Boot para la aplicación móvil de deliv
 - [Tecnologías](#-tecnologías)
 - [Arquitectura](#-arquitectura)
 - [Módulos Implementados](#-módulos-implementados)
+- [Sistema de Autenticación UCV](#-sistema-de-autenticación-ucv)
 - [Instalación y Configuración](#-instalación-y-configuración)
 - [API Endpoints](#-api-endpoints)
 - [Datos de Prueba](#-datos-de-prueba)
@@ -21,6 +22,8 @@ Backend completo desarrollado en Spring Boot para la aplicación móvil de deliv
 ## 🚀 Características
 
 - **🔐 Autenticación JWT**: Sistema seguro de autenticación con tokens JWT
+- **🎓 Autenticación UCV**: Sistema específico para estudiantes UCV con validación de username y OTP
+- **📧 Envío de Emails**: Sistema de verificación por email con códigos OTP
 - **🛒 Carrito de Compras**: Gestión completa del carrito con cálculos automáticos
 - **📦 Gestión de Pedidos**: Sistema completo de pedidos con estados
 - **🏪 Múltiples Tiendas**: Soporte para minimarket, dulcería y emprendedores
@@ -34,15 +37,17 @@ Backend completo desarrollado en Spring Boot para la aplicación móvil de deliv
 
 | Tecnología | Versión | Descripción |
 |------------|---------|-------------|
-| **Java** | 17+ | Lenguaje de programación |
-| **Spring Boot** | 3.x | Framework principal |
+| **Java** | 21+ | Lenguaje de programación |
+| **Spring Boot** | 3.5.6 | Framework principal |
 | **Spring Security** | 6.x | Autenticación y autorización |
 | **Spring Data JPA** | 3.x | ORM y persistencia |
+| **Spring Mail** | 3.x | Envío de emails |
 | **PostgreSQL** | 12+ | Base de datos |
 | **Maven** | 3.6+ | Gestión de dependencias |
 | **JWT** | 0.11.5 | Tokens de autenticación |
 | **Lombok** | - | Reducción de código boilerplate |
 | **Hibernate Validator** | - | Validación de datos |
+| **SpringDoc OpenAPI** | 2.8.9 | Documentación de API |
 
 ## 🏗️ Arquitectura
 
@@ -58,15 +63,24 @@ Backend completo desarrollado en Spring Boot para la aplicación móvil de deliv
 │      DTOs       │    │    Entities    │    │   PostgreSQL    │
 │  (Data Transfer)│    │   (JPA Models) │    │   (Database)    │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Email Service │    │    OTP Service  │    │   Gmail SMTP    │
+│   (Notifications)│    │   (Security)   │    │   (Email)       │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
 ## 📦 Módulos Implementados
 
 ### 1. 🔐 Autenticación y Usuarios
-- **Registro de usuarios** con validación de email UCV
+- **Registro tradicional** con validación de email
+- **Registro UCV** con validación de username y OTP por email
 - **Login con JWT** y gestión de tokens
 - **Perfil de usuario** con roles (CLIENTE, ADMIN)
 - **Seguridad** con Spring Security 6
+- **Envío de emails** con códigos OTP de verificación
 
 ### 2. 🏪 Gestión de Tiendas
 - **Listado de tiendas** (Listo, Fresco, Emprendedores)
@@ -96,13 +110,60 @@ Backend completo desarrollado en Spring Boot para la aplicación móvil de deliv
 - **Actualización automática** de stock
 - **Notas del pedido** opcionales
 
+## 🎓 Sistema de Autenticación UCV
+
+### Características del Sistema UCV
+
+El sistema está diseñado específicamente para estudiantes de la Universidad César Vallejo con las siguientes características:
+
+#### **Validación de Username UCV**
+- **Formato**: Solo letras mayúsculas y números (ej: `XMONTANOGA`)
+- **Longitud**: Entre 3 y 20 caracteres
+- **Patrón**: `^[A-Z0-9]+$`
+
+#### **Validación de Contraseña Segura**
+- **Longitud mínima**: 8 caracteres
+- **Requisitos obligatorios**:
+  - Al menos una letra minúscula
+  - Al menos una letra mayúscula
+  - Al menos un número
+  - Al menos un símbolo (@$!%*?&)
+- **Patrón**: `^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$`
+
+#### **Generación Automática de Email UCV**
+- **Formato**: `{username}@ucvvirtual.edu.pe`
+- **Ejemplo**: `XMONTANOGA@ucvvirtual.edu.pe`
+
+#### **Sistema de Verificación OTP**
+- **Código**: 6 dígitos numéricos
+- **Expiración**: 10 minutos
+- **Envío**: Por email automático
+- **Seguridad**: Códigos únicos por sesión
+
+### Flujo de Registro UCV
+
+```mermaid
+graph TD
+    A[Estudiante ingresa username y contraseña] --> B[Validar formato de username]
+    B --> C[Validar contraseña segura]
+    C --> D[Generar email UCV automáticamente]
+    D --> E[Verificar que username no exista]
+    E --> F[Generar código OTP de 6 dígitos]
+    F --> G[Enviar OTP por email]
+    G --> H[Estudiante ingresa código OTP]
+    H --> I[Verificar OTP válido y no expirado]
+    I --> J[Crear usuario en base de datos]
+    J --> K[Generar JWT y retornar token]
+```
+
 ## ⚙️ Instalación y Configuración
 
 ### Prerrequisitos
 
-- **Java 17+** (OpenJDK o Oracle JDK)
+- **Java 21+** (OpenJDK o Oracle JDK)
 - **Maven 3.6+**
 - **PostgreSQL 12+**
+- **Gmail Account** (para envío de emails)
 - **IntelliJ IDEA** (recomendado) o Eclipse
 - **Git** (para clonar el repositorio)
 
@@ -131,17 +192,35 @@ GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO foodv_user;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO foodv_user;
 ```
 
-#### Configuración en pgAdmin 4:
+### 2. Configuración de Email (Gmail)
 
-1. **Abrir pgAdmin 4**
-2. **Conectar al servidor PostgreSQL**
-3. **Crear la base de datos**:
-   - Click derecho en "Databases" → "Create" → "Database..."
-   - Nombre: `foodv_db`
-   - Owner: `postgres`
-   - Click "Save"
+#### Configurar Contraseña de Aplicación:
 
-### 2. Configuración del Proyecto
+1. **Habilitar autenticación de 2 factores** en tu cuenta de Gmail
+2. **Generar contraseña de aplicación**:
+   - Ve a: https://myaccount.google.com/
+   - Seguridad → Verificación en 2 pasos
+   - Contraseñas de aplicaciones
+   - Genera una nueva contraseña para "Mail"
+   - **Guarda esta contraseña de 16 caracteres**
+
+#### Configurar Variables de Entorno:
+
+```bash
+# Windows (PowerShell)
+$env:MAIL_USERNAME="tu-email@gmail.com"
+$env:MAIL_PASSWORD="tu-contraseña-de-aplicación"
+
+# Windows (CMD)
+set MAIL_USERNAME=tu-email@gmail.com
+set MAIL_PASSWORD=tu-contraseña-de-aplicación
+
+# Linux/Mac
+export MAIL_USERNAME="tu-email@gmail.com"
+export MAIL_PASSWORD="tu-contraseña-de-aplicación"
+```
+
+### 3. Configuración del Proyecto
 
 #### Clonar e Importar en IntelliJ:
 
@@ -161,14 +240,14 @@ cd foodv
    - Click "Next" → "Finish"
 
 2. **Configurar JDK**:
-   - File → Project Structure → Project → Project SDK → Java 17
+   - File → Project Structure → Project → Project SDK → Java 21
    - Verificar que Maven esté configurado correctamente
 
 3. **Configurar Base de Datos**:
    - Verificar que PostgreSQL esté ejecutándose
    - La configuración de conexión está en `src/main/resources/application.properties`
 
-### 3. Configuración de application.properties
+### 4. Configuración de application.properties
 
 Verificar que el archivo `src/main/resources/application.properties` tenga la configuración correcta:
 
@@ -189,6 +268,19 @@ spring.jpa.properties.hibernate.format_sql=true
 jwt.secret=mySecretKey123456789012345678901234567890
 jwt.expiration=86400000
 
+# Email Configuration
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=${MAIL_USERNAME:tu-email@gmail.com}
+spring.mail.password=${MAIL_PASSWORD:tu-contraseña-de-aplicación}
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.ssl.trust=smtp.gmail.com
+spring.mail.properties.mail.smtp.ssl.protocols=TLSv1.2
+
+# App Configuration
+app.mail.from=noreply@foodv.ucv.edu.pe
+
 # Server Configuration
 server.port=8080
 
@@ -197,7 +289,7 @@ logging.level.pe.ucv.foodv=DEBUG
 logging.level.org.springframework.security=DEBUG
 ```
 
-### 4. Ejecutar el Proyecto
+### 5. Ejecutar el Proyecto
 
 #### Desde IntelliJ IDEA:
 1. **Ejecutar la aplicación**:
@@ -232,8 +324,11 @@ Productos creados exitosamente
 
 | Método | Endpoint | Descripción | Request Body |
 |--------|----------|-------------|--------------|
-| `POST` | `/api/auth/register` | Registro de usuario | `{"name": "string", "email": "string", "password": "string"}` |
-| `POST` | `/api/auth/login` | Login de usuario | `{"email": "string", "password": "string"}` |
+| `POST` | `/api/auth/register` | Registro tradicional | `{"name": "string", "email": "string", "password": "string"}` |
+| `POST` | `/api/auth/login` | Login tradicional | `{"email": "string", "password": "string"}` |
+| `POST` | `/api/auth/register-ucv` | **Registro UCV** | `{"username": "string", "password": "string"}` |
+| `POST` | `/api/auth/verify-otp` | **Verificar OTP UCV** | `{"username": "string", "otpCode": "string"}` |
+| `POST` | `/api/auth/login-username` | **Login con username** | `{"usernameOrEmail": "string", "password": "string"}` |
 
 ### 👤 Usuarios (Protegidos)
 
@@ -310,15 +405,15 @@ El sistema incluye datos de prueba que se cargan automáticamente al iniciar la 
 
 ### Secuencia de Pruebas Recomendada
 
-#### 1. 🔐 Registro de Usuario
+#### 1. 🎓 Registro UCV (Nuevo)
+
 ```http
-POST {{base_url}}/api/auth/register
+POST {{base_url}}/api/auth/register-ucv
 Content-Type: application/json
 
 {
-    "name": "Test User",
-    "email": "test@ucv.edu.pe",
-    "password": "password123"
+    "username": "XMONTANOGA",
+    "password": "MiPassword123!"
 }
 ```
 
@@ -326,19 +421,65 @@ Content-Type: application/json
 ```json
 {
     "success": true,
-    "message": "Registro exitoso",
+    "message": "Proceso iniciado",
+    "data": "Código de verificación enviado a XMONTANOGA@ucvvirtual.edu.pe"
+}
+```
+
+#### 2. 📧 Verificar OTP
+
+```http
+POST {{base_url}}/api/auth/verify-otp
+Content-Type: application/json
+
+{
+    "username": "XMONTANOGA",
+    "otpCode": "123456"
+}
+```
+
+**Respuesta esperada:**
+```json
+{
+    "success": true,
+    "message": "Registro completado exitosamente",
     "data": {
         "token": "eyJhbGciOiJIUzI1NiJ9...",
         "type": "Bearer",
-        "id": 4,
-        "name": "Test User",
-        "email": "test@ucv.edu.pe",
+        "id": 5,
+        "name": "XMONTANOGA",
+        "email": "XMONTANOGA@ucvvirtual.edu.pe",
         "role": "CLIENTE"
     }
 }
 ```
 
-#### 2. 🔑 Login
+#### 3. 🔑 Login con Username
+
+```http
+POST {{base_url}}/api/auth/login-username
+Content-Type: application/json
+
+{
+    "usernameOrEmail": "XMONTANOGA",
+    "password": "MiPassword123!"
+}
+```
+
+#### 4. 🔑 Login con Email UCV
+
+```http
+POST {{base_url}}/api/auth/login-username
+Content-Type: application/json
+
+{
+    "usernameOrEmail": "XMONTANOGA@ucvvirtual.edu.pe",
+    "password": "MiPassword123!"
+}
+```
+
+#### 5. 🔐 Login Tradicional
+
 ```http
 POST {{base_url}}/api/auth/login
 Content-Type: application/json
@@ -351,28 +492,33 @@ Content-Type: application/json
 
 **⚠️ IMPORTANTE**: Copia el `token` de la respuesta y guárdalo en la variable `{{token}}` para los siguientes requests.
 
-#### 3. 🏪 Listar Tiendas
+#### 6. 🏪 Listar Tiendas
+
 ```http
 GET {{base_url}}/api/stores
 ```
 
-#### 4. 🛍️ Listar Productos
+#### 7. 🛍️ Listar Productos
+
 ```http
 GET {{base_url}}/api/products
 ```
 
-#### 5. 🔍 Buscar Productos
+#### 8. 🔍 Buscar Productos
+
 ```http
 GET {{base_url}}/api/products/search?q=agua
 ```
 
-#### 6. 👤 Obtener Perfil
+#### 9. 👤 Obtener Perfil
+
 ```http
 GET {{base_url}}/api/users/profile
 Authorization: Bearer {{token}}
 ```
 
-#### 7. 🛒 Agregar al Carrito
+#### 10. 🛒 Agregar al Carrito
+
 ```http
 POST {{base_url}}/api/cart/add
 Authorization: Bearer {{token}}
@@ -384,13 +530,15 @@ Content-Type: application/json
 }
 ```
 
-#### 8. 🛒 Ver Carrito
+#### 11. 🛒 Ver Carrito
+
 ```http
 GET {{base_url}}/api/cart
 Authorization: Bearer {{token}}
 ```
 
-#### 9. 📦 Crear Pedido
+#### 12. 📦 Crear Pedido
+
 ```http
 POST {{base_url}}/api/orders
 Authorization: Bearer {{token}}
@@ -404,7 +552,8 @@ Content-Type: application/json
 }
 ```
 
-#### 10. 📋 Ver Historial de Pedidos
+#### 13. 📋 Ver Historial de Pedidos
+
 ```http
 GET {{base_url}}/api/orders
 Authorization: Bearer {{token}}
@@ -416,18 +565,23 @@ Authorization: Bearer {{token}}
 src/main/java/pe/ucv/foodv/
 ├── 📁 config/                    # Configuración del sistema
 │   ├── SecurityConfig.java      # Configuración de Spring Security
-│   └── DataSeeder.java          # Datos de prueba (seeds)
+│   ├── DataSeeder.java          # Datos de prueba (seeds)
+│   └── EmailConfig.java          # Configuración de email
 ├── 📁 controller/               # Controladores REST
 │   ├── AuthController.java     # Autenticación (login/register)
 │   ├── UserController.java     # Gestión de usuarios
 │   ├── StoreController.java    # Gestión de tiendas
 │   ├── ProductController.java  # Gestión de productos
 │   ├── CartController.java     # Gestión del carrito
-│   └── OrderController.java    # Gestión de pedidos
+│   ├── OrderController.java    # Gestión de pedidos
+│   └── DebugController.java    # Endpoints de debug
 ├── 📁 dto/                      # DTOs para transferencia de datos
 │   ├── AuthResponse.java       # Respuesta de autenticación
-│   ├── LoginRequest.java       # Request de login
-│   ├── RegisterRequest.java    # Request de registro
+│   ├── LoginRequest.java       # Request de login tradicional
+│   ├── LoginUsernameRequest.java # Request de login con username
+│   ├── RegisterRequest.java    # Request de registro tradicional
+│   ├── RegisterUcvRequest.java # Request de registro UCV
+│   ├── VerifyOtpRequest.java   # Request de verificación OTP
 │   ├── UserResponse.java       # Respuesta de usuario
 │   ├── StoreResponse.java      # Respuesta de tienda
 │   ├── ProductResponse.java    # Respuesta de producto
@@ -437,7 +591,7 @@ src/main/java/pe/ucv/foodv/
 ├── 📁 exception/               # Manejo de excepciones
 │   └── GlobalExceptionHandler.java # Handler global de excepciones
 ├── 📁 model/entity/            # Entidades JPA
-│   ├── User.java              # Entidad Usuario
+│   ├── User.java              # Entidad Usuario (con username UCV)
 │   ├── Store.java             # Entidad Tienda
 │   ├── Product.java           # Entidad Producto
 │   ├── Cart.java              # Entidad Carrito
@@ -458,6 +612,8 @@ src/main/java/pe/ucv/foodv/
 │   └── UserDetailsServiceImpl.java # Implementación de UserDetailsService
 ├── 📁 service/                 # Servicios de negocio
 │   ├── AuthService.java       # Servicio de autenticación
+│   ├── EmailService.java      # Servicio de envío de emails
+│   ├── OtpService.java        # Servicio de códigos OTP
 │   ├── StoreService.java      # Servicio de tiendas
 │   ├── ProductService.java    # Servicio de productos
 │   ├── CartService.java       # Servicio del carrito
@@ -478,6 +634,15 @@ spring.datasource.password=tu-password-segura
 # JWT secreto más seguro (mínimo 256 bits)
 jwt.secret=tu-clave-secreta-muy-larga-y-segura-de-al-menos-32-caracteres
 jwt.expiration=86400000
+
+# Configuración de email de producción
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=${MAIL_USERNAME}
+spring.mail.password=${MAIL_PASSWORD}
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.ssl.trust=smtp.gmail.com
 
 # Configuración de servidor
 server.port=8080
@@ -507,6 +672,10 @@ DB_PASSWORD=tu_password_segura
 JWT_SECRET=tu_clave_secreta_muy_larga_y_segura
 JWT_EXPIRATION=86400000
 
+# Email
+MAIL_USERNAME=tu-email@gmail.com
+MAIL_PASSWORD=tu-contraseña-de-aplicación
+
 # Servidor
 SERVER_PORT=8080
 ```
@@ -522,15 +691,41 @@ org.postgresql.util.PSQLException: FATAL: password authentication failed
 - Verificar credenciales en `application.properties`
 - Verificar que la base de datos `foodv_db` exista
 
-### Error de Compilación
+### Error de Autenticación de Email
 ```
-java: cannot find symbol
+Authentication failed
 ```
 **Solución**: 
-- Verificar que Java 17+ esté configurado
-- Ejecutar `mvn clean install`
-- Verificar dependencias en `pom.xml`
-- Limpiar cache de IntelliJ: File → Invalidate Caches and Restart
+- Verificar que las variables de entorno `MAIL_USERNAME` y `MAIL_PASSWORD` estén configuradas
+- Verificar que la contraseña de aplicación de Gmail sea correcta (16 caracteres sin espacios)
+- Verificar que la autenticación de 2 factores esté habilitada en Gmail
+
+### Error de Validación de Username UCV
+```
+El nombre de usuario debe contener solo letras mayúsculas y números
+```
+**Solución**: 
+- Usar solo letras mayúsculas y números (ej: `XMONTANOGA`)
+- No usar caracteres especiales o espacios
+- Longitud entre 3 y 20 caracteres
+
+### Error de Validación de Contraseña
+```
+La contraseña debe contener al menos: 8 caracteres, una letra minúscula, una mayúscula, un número y un símbolo
+```
+**Solución**: 
+- Mínimo 8 caracteres
+- Incluir al menos: una minúscula, una mayúscula, un número y un símbolo (@$!%*?&)
+- Ejemplo válido: `MiPassword123!`
+
+### Error de OTP Expirado
+```
+Código OTP inválido o expirado
+```
+**Solución**: 
+- El código OTP expira en 10 minutos
+- Solicitar un nuevo código con `/api/auth/register-ucv`
+- Verificar que el código sea exactamente de 6 dígitos
 
 ### Error 401 Unauthorized
 ```
@@ -550,6 +745,7 @@ java: cannot find symbol
 - Verificar logs en la consola de IntelliJ para más detalles
 - Verificar que la base de datos esté accesible
 - Verificar que todas las dependencias estén instaladas
+- Verificar configuración de email
 
 ### Error de Puerto en Uso
 ```
@@ -561,10 +757,9 @@ Port 8080 was already in use
 
 ## 📊 Métricas y Monitoreo
 
-### Endpoints de Salud (Futuro)
-- `GET /actuator/health` - Estado de la aplicación
-- `GET /actuator/info` - Información de la aplicación
-- `GET /actuator/metrics` - Métricas de la aplicación
+### Endpoints de Debug
+
+- `GET /api/debug/otp-status` - Estado de los códigos OTP almacenados
 
 ### Logging Recomendado
 ```properties

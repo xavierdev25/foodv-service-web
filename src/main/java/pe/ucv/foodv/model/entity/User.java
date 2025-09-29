@@ -3,6 +3,7 @@ package pe.ucv.foodv.model.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +27,12 @@ public class User {
     @Size(min = 2, max = 50, message = "El nombre debe tener entre 2 y 50 caracteres")
     @Column(name = "name", nullable = false)
     private String name;
+    
+    @NotBlank(message = "El nombre de usuario UCV es obligatorio")
+    @Pattern(regexp = "^[A-Z0-9]+$", message = "El nombre de usuario debe contener solo letras mayúsculas y números")
+    @Size(min = 3, max = 20, message = "El nombre de usuario debe tener entre 3 y 20 caracteres")
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
     
     @Email(message = "El email debe tener un formato válido")
     @NotBlank(message = "El email es obligatorio")
