@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.ucv.foodv.dto.ApiResponse;
 import pe.ucv.foodv.dto.ProductResponse;
+import pe.ucv.foodv.model.entity.Product;
 import pe.ucv.foodv.service.ProductService;
 
 import java.util.List;
@@ -47,6 +48,17 @@ public class ProductController {
     public ResponseEntity<ApiResponse<List<ProductResponse>>> getProductsByStore(@PathVariable Long storeId) {
         try {
             List<ProductResponse> products = productService.getProductsByStore(storeId);
+            return ResponseEntity.ok(ApiResponse.success(products));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
+    }
+    
+    @Operation(summary = "Obtener productos por categoría", description = "Retorna todos los productos de una categoría específica")
+    @GetMapping("/category/{category}")
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getProductsByCategory(@PathVariable Product.ProductCategory category) {
+        try {
+            List<ProductResponse> products = productService.getProductsByCategory(category);
             return ResponseEntity.ok(ApiResponse.success(products));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));

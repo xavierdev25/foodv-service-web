@@ -2,7 +2,6 @@ package pe.ucv.foodv.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -45,6 +44,14 @@ public class Order {
     @Column(name = "salon", nullable = false)
     private String salon;
     
+    @Enumerated(EnumType.STRING)
+    @Column(name = "delivery_method", nullable = false)
+    private DeliveryMethod deliveryMethod;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method", nullable = false)
+    private PaymentMethod paymentMethod;
+    
     @Column(name = "notes", length = 500)
     private String notes;
     
@@ -72,7 +79,15 @@ public class Order {
     }
     
     public enum OrderStatus {
-        PENDIENTE, PREPARANDO, EN_CAMINO, ENTREGADO, CANCELADO
+        PENDIENTE, CONFIRMADO, EN_CAMINO, ENTREGADO, CANCELADO
+    }
+    
+    public enum DeliveryMethod {
+        RECOGIDA_TIENDA, MINI_DELIVERY
+    }
+    
+    public enum PaymentMethod {
+        EFECTIVO, YAPE, PLIN
     }
 }
 

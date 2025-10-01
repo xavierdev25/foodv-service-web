@@ -15,6 +15,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     List<Product> findByIsActiveTrue();
     
+    List<Product> findByCategoryAndIsActiveTrue(Product.ProductCategory category);
+    
     @Query("SELECT p FROM Product p WHERE p.isActive = true AND " +
            "(LOWER(p.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "LOWER(p.description) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
@@ -24,5 +26,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
            "(LOWER(p.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "LOWER(p.description) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
     List<Product> searchProductsByStore(@Param("storeId") Long storeId, @Param("searchTerm") String searchTerm);
+    
+    @Query("SELECT p FROM Product p WHERE p.category = :category AND p.isActive = true AND " +
+           "(LOWER(p.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(p.description) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
+    List<Product> searchProductsByCategory(@Param("category") Product.ProductCategory category, @Param("searchTerm") String searchTerm);
 }
 

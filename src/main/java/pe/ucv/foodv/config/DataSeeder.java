@@ -107,50 +107,53 @@ public class DataSeeder implements CommandLineRunner {
             Store cafe = storeRepository.findByName("Café del Estudiante").orElse(null);
             Store snacks = storeRepository.findByName("Snacks Saludables").orElse(null);
             
-            // Productos para Listo (Minimarket)
+            // Productos para Listo (Minimarket) - BEBIDAS
             if (listo != null) {
-                createProduct("Agua 500ml", "Agua embotellada", new BigDecimal("2.50"), 100, listo);
-                createProduct("Gaseosa 500ml", "Coca Cola 500ml", new BigDecimal("3.50"), 50, listo);
-                createProduct("Galletas", "Galletas de chocolate", new BigDecimal("1.50"), 30, listo);
-                createProduct("Chicle", "Chicle de menta", new BigDecimal("0.50"), 200, listo);
-                createProduct("Café instantáneo", "Café instantáneo 3 en 1", new BigDecimal("2.00"), 25, listo);
+                createProduct("Agua 500ml", "Agua embotellada", new BigDecimal("2.50"), 100, listo, Product.ProductCategory.BEBIDAS);
+                createProduct("Gaseosa 500ml", "Coca Cola 500ml", new BigDecimal("3.50"), 50, listo, Product.ProductCategory.BEBIDAS);
+                createProduct("Café instantáneo", "Café instantáneo 3 en 1", new BigDecimal("2.00"), 25, listo, Product.ProductCategory.BEBIDAS);
+                
+                // SNACKS
+                createProduct("Galletas", "Galletas de chocolate", new BigDecimal("1.50"), 30, listo, Product.ProductCategory.SNACKS);
+                createProduct("Chicle", "Chicle de menta", new BigDecimal("0.50"), 200, listo, Product.ProductCategory.SNACKS);
             }
             
-            // Productos para Fresco (Dulcería)
+            // Productos para Fresco (Dulcería) - POSTRES
             if (fresco != null) {
-                createProduct("Chocolate", "Chocolate de leche", new BigDecimal("3.00"), 40, fresco);
-                createProduct("Caramelos", "Caramelos surtidos", new BigDecimal("1.00"), 100, fresco);
-                createProduct("Gomitas", "Gomitas de frutas", new BigDecimal("2.50"), 35, fresco);
-                createProduct("Helado", "Helado de vainilla", new BigDecimal("4.00"), 20, fresco);
+                createProduct("Chocolate", "Chocolate de leche", new BigDecimal("3.00"), 40, fresco, Product.ProductCategory.POSTRES);
+                createProduct("Caramelos", "Caramelos surtidos", new BigDecimal("1.00"), 100, fresco, Product.ProductCategory.POSTRES);
+                createProduct("Gomitas", "Gomitas de frutas", new BigDecimal("2.50"), 35, fresco, Product.ProductCategory.SNACKS);
+                createProduct("Helado", "Helado de vainilla", new BigDecimal("4.00"), 20, fresco, Product.ProductCategory.POSTRES);
             }
             
-            // Productos para Café del Estudiante
+            // Productos para Café del Estudiante - BEBIDAS y SNACKS
             if (cafe != null) {
-                createProduct("Café americano", "Café americano caliente", new BigDecimal("5.00"), 50, cafe);
-                createProduct("Café con leche", "Café con leche caliente", new BigDecimal("6.00"), 40, cafe);
-                createProduct("Sandwich de pollo", "Sandwich de pollo con vegetales", new BigDecimal("8.00"), 15, cafe);
-                createProduct("Empanada", "Empanada de pollo", new BigDecimal("4.50"), 25, cafe);
+                createProduct("Café americano", "Café americano caliente", new BigDecimal("5.00"), 50, cafe, Product.ProductCategory.BEBIDAS);
+                createProduct("Café con leche", "Café con leche caliente", new BigDecimal("6.00"), 40, cafe, Product.ProductCategory.BEBIDAS);
+                createProduct("Sandwich de pollo", "Sandwich de pollo con vegetales", new BigDecimal("8.00"), 15, cafe, Product.ProductCategory.SNACKS);
+                createProduct("Empanada", "Empanada de pollo", new BigDecimal("4.50"), 25, cafe, Product.ProductCategory.SNACKS);
             }
             
-            // Productos para Snacks Saludables
+            // Productos para Snacks Saludables - BEBIDAS, SNACKS y POSTRES
             if (snacks != null) {
-                createProduct("Ensalada de frutas", "Ensalada fresca de frutas", new BigDecimal("7.00"), 20, snacks);
-                createProduct("Yogurt natural", "Yogurt natural con granola", new BigDecimal("5.50"), 30, snacks);
-                createProduct("Barra energética", "Barra energética de avena", new BigDecimal("4.00"), 25, snacks);
-                createProduct("Jugo natural", "Jugo de naranja natural", new BigDecimal("6.50"), 15, snacks);
+                createProduct("Ensalada de frutas", "Ensalada fresca de frutas", new BigDecimal("7.00"), 20, snacks, Product.ProductCategory.POSTRES);
+                createProduct("Yogurt natural", "Yogurt natural con granola", new BigDecimal("5.50"), 30, snacks, Product.ProductCategory.POSTRES);
+                createProduct("Barra energética", "Barra energética de avena", new BigDecimal("4.00"), 25, snacks, Product.ProductCategory.SNACKS);
+                createProduct("Jugo natural", "Jugo de naranja natural", new BigDecimal("6.50"), 15, snacks, Product.ProductCategory.BEBIDAS);
             }
             
             System.out.println("Productos creados exitosamente");
         }
     }
     
-    private void createProduct(String name, String description, BigDecimal price, Integer stock, Store store) {
+    private void createProduct(String name, String description, BigDecimal price, Integer stock, Store store, Product.ProductCategory category) {
         Product product = new Product();
         product.setName(name);
         product.setDescription(description);
         product.setPrice(price);
         product.setStock(stock);
         product.setStore(store);
+        product.setCategory(category);
         product.setIsActive(true);
         productRepository.save(product);
     }

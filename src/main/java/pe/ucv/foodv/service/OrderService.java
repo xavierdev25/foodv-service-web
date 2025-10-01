@@ -54,6 +54,8 @@ public class OrderService {
         order.setPabellon(request.getPabellon());
         order.setPiso(request.getPiso());
         order.setSalon(request.getSalon());
+        order.setDeliveryMethod(request.getDeliveryMethod());
+        order.setPaymentMethod(request.getPaymentMethod());
         order.setNotes(request.getNotes());
         order.setTotal(cart.getTotal());
         
@@ -133,6 +135,8 @@ public class OrderService {
             order.getPabellon(),
             order.getPiso(),
             order.getSalon(),
+            order.getDeliveryMethod(),
+            order.getPaymentMethod(),
             order.getNotes(),
             items,
             order.getCreatedAt(),

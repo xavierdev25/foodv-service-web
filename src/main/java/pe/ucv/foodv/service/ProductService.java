@@ -27,6 +27,12 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
     
+    public List<ProductResponse> getProductsByCategory(Product.ProductCategory category) {
+        return productRepository.findByCategoryAndIsActiveTrue(category).stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+    
     public List<ProductResponse> searchProducts(String searchTerm) {
         return productRepository.searchProducts(searchTerm).stream()
                 .map(this::convertToResponse)
@@ -58,6 +64,7 @@ public class ProductService {
             product.getPrice(),
             product.getStock(),
             product.getImageUrl(),
+            product.getCategory(),
             product.getIsActive(),
             product.getStore().getId(),
             product.getStore().getName(),

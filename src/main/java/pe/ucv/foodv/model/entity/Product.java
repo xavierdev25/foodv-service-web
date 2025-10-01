@@ -44,6 +44,10 @@ public class Product {
     @Column(name = "image_url")
     private String imageUrl;
     
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false)
+    private ProductCategory category;
+    
     @Column(name = "is_active")
     private Boolean isActive = true;
     
@@ -72,6 +76,10 @@ public class Product {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+    
+    public enum ProductCategory {
+        BEBIDAS, SNACKS, POSTRES
     }
 }
 
