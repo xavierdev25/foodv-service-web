@@ -37,6 +37,7 @@ public class DataSeeder implements CommandLineRunner {
             // Usuario administrador
             User admin = new User();
             admin.setName("Administrador");
+            admin.setUsername("ADMIN001");
             admin.setEmail("admin@ucv.edu.pe");
             admin.setPassword(passwordEncoder.encode("admin123"));
             admin.setRole(User.UserRole.ADMIN);
@@ -45,6 +46,7 @@ public class DataSeeder implements CommandLineRunner {
             // Usuarios de prueba
             User user1 = new User();
             user1.setName("Juan Pérez");
+            user1.setUsername("JPEREZ001");
             user1.setEmail("juan.perez@ucv.edu.pe");
             user1.setPassword(passwordEncoder.encode("password123"));
             user1.setRole(User.UserRole.CLIENTE);
@@ -52,6 +54,7 @@ public class DataSeeder implements CommandLineRunner {
             
             User user2 = new User();
             user2.setName("María García");
+            user2.setUsername("MGARCIA001");
             user2.setEmail("maria.garcia@ucv.edu.pe");
             user2.setPassword(passwordEncoder.encode("password123"));
             user2.setRole(User.UserRole.CLIENTE);
