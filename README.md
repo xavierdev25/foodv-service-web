@@ -32,22 +32,25 @@ Backend completo desarrollado en Spring Boot para la aplicación móvil de deliv
 - **🛡️ Seguridad**: Configuración de seguridad robusta con Spring Security
 - **📊 Validación**: Validación completa de datos con Hibernate Validator
 - **🌱 Datos de Prueba**: Seeds automáticos para desarrollo y testing
+- **🏫 Campus Map**: Sistema de mapeo del campus con pabellones y aulas
+- **💰 Pago en Efectivo**: Flujo especial para pagos en efectivo sin payment simulator
+- **🚪 Logout**: Endpoint para cerrar sesión de forma segura
 
 ## 🛠️ Tecnologías
 
-| Tecnología | Versión | Descripción |
-|------------|---------|-------------|
-| **Java** | 21+ | Lenguaje de programación |
-| **Spring Boot** | 3.5.6 | Framework principal |
-| **Spring Security** | 6.x | Autenticación y autorización |
-| **Spring Data JPA** | 3.x | ORM y persistencia |
-| **Spring Mail** | 3.x | Envío de emails |
-| **PostgreSQL** | 12+ | Base de datos |
-| **Maven** | 3.6+ | Gestión de dependencias |
-| **JWT** | 0.11.5 | Tokens de autenticación |
-| **Lombok** | - | Reducción de código boilerplate |
-| **Hibernate Validator** | - | Validación de datos |
-| **SpringDoc OpenAPI** | 2.8.9 | Documentación de API |
+| Tecnología              | Versión | Descripción                     |
+| ----------------------- | ------- | ------------------------------- |
+| **Java**                | 21+     | Lenguaje de programación        |
+| **Spring Boot**         | 3.5.6   | Framework principal             |
+| **Spring Security**     | 6.x     | Autenticación y autorización    |
+| **Spring Data JPA**     | 3.x     | ORM y persistencia              |
+| **Spring Mail**         | 3.x     | Envío de emails                 |
+| **PostgreSQL**          | 12+     | Base de datos                   |
+| **Maven**               | 3.6+    | Gestión de dependencias         |
+| **JWT**                 | 0.11.5  | Tokens de autenticación         |
+| **Lombok**              | -       | Reducción de código boilerplate |
+| **Hibernate Validator** | -       | Validación de datos             |
+| **SpringDoc OpenAPI**   | 2.8.9   | Documentación de API            |
 
 ## 🏗️ Arquitectura
 
@@ -75,6 +78,7 @@ Backend completo desarrollado en Spring Boot para la aplicación móvil de deliv
 ## 📦 Módulos Implementados
 
 ### 1. 🔐 Autenticación y Usuarios
+
 - **Registro tradicional** con validación de email
 - **Registro UCV** con validación de username y OTP por email
 - **Login con JWT** y gestión de tokens
@@ -83,12 +87,14 @@ Backend completo desarrollado en Spring Boot para la aplicación móvil de deliv
 - **Envío de emails** con códigos OTP de verificación
 
 ### 2. 🏪 Gestión de Tiendas
+
 - **Listado de tiendas** (Listo, Fresco, Emprendedores)
 - **Búsqueda por tipo** (MINIMARKET, DULCERIA, EMPRENDEDOR)
 - **Gestión de estado** activo/inactivo
 - **Información detallada** de cada tienda
 
 ### 3. 🛍️ Catálogo de Productos
+
 - **Listado de productos** por tienda
 - **Búsqueda avanzada** por nombre y descripción
 - **Gestión de stock** y precios
@@ -96,6 +102,7 @@ Backend completo desarrollado en Spring Boot para la aplicación móvil de deliv
 - **Filtros por tienda** y estado
 
 ### 4. 🛒 Carrito de Compras
+
 - **Agregar/quitar productos** del carrito
 - **Actualizar cantidades** con validación de stock
 - **Cálculo automático** de totales y subtotales
@@ -103,12 +110,25 @@ Backend completo desarrollado en Spring Boot para la aplicación móvil de deliv
 - **Validación de stock** antes de agregar
 
 ### 5. 📦 Gestión de Pedidos
+
 - **Crear pedidos** desde el carrito
 - **Selección de lugar de entrega** (pabellón, piso, salón)
 - **Estados de pedido**: PENDIENTE, PREPARANDO, EN_CAMINO, ENTREGADO, CANCELADO
 - **Historial de pedidos** del cliente
 - **Actualización automática** de stock
 - **Notas del pedido** opcionales
+- **Pago en efectivo** con confirmación directa (sin payment simulator)
+- **Métodos de entrega**: RECOGIDA_TIENDA, MINI_DELIVERY
+- **Métodos de pago**: EFECTIVO, YAPE, PLIN
+
+### 6. 🏫 Sistema de Campus
+
+- **Mapa del campus** con pabellones y aulas
+- **Pabellones disponibles**: A, B, C, D, E
+- **Pisos por pabellón** (hasta 12 pisos en pabellón B)
+- **Puntos de entrega** en el campus
+- **Áreas comunes** (Biblioteca, Cafetería, etc.)
+- **Instrucciones de entrega** para delivery y recogida en tienda
 
 ## 🎓 Sistema de Autenticación UCV
 
@@ -117,24 +137,28 @@ Backend completo desarrollado en Spring Boot para la aplicación móvil de deliv
 El sistema está diseñado específicamente para estudiantes de la Universidad César Vallejo con las siguientes características:
 
 #### **Validación de Username UCV**
+
 - **Formato**: Solo letras mayúsculas y números (ej: `XMONTANOGA`)
 - **Longitud**: Entre 3 y 20 caracteres
 - **Patrón**: `^[A-Z0-9]+$`
 
 #### **Validación de Contraseña Segura**
+
 - **Longitud mínima**: 8 caracteres
 - **Requisitos obligatorios**:
   - Al menos una letra minúscula
   - Al menos una letra mayúscula
   - Al menos un número
-  - Al menos un símbolo (@$!%*?&)
+  - Al menos un símbolo (@$!%\*?&)
 - **Patrón**: `^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$`
 
 #### **Generación Automática de Email UCV**
+
 - **Formato**: `{username}@ucvvirtual.edu.pe`
 - **Ejemplo**: `XMONTANOGA@ucvvirtual.edu.pe`
 
 #### **Sistema de Verificación OTP**
+
 - **Código**: 6 dígitos numéricos
 - **Expiración**: 10 minutos
 - **Envío**: Por email automático
@@ -177,7 +201,7 @@ psql -U postgres
 
 -- Crear la base de datos
 CREATE DATABASE foodv_db
-    WITH 
+    WITH
     OWNER = postgres
     ENCODING = 'UTF8'
     LC_COLLATE = 'Spanish_Spain.1252'
@@ -235,11 +259,13 @@ cd foodv
 #### Configurar en IntelliJ IDEA:
 
 1. **Importar el proyecto**:
+
    - File → Open → Seleccionar la carpeta del proyecto
    - Seleccionar "Import project from external model" → Maven
    - Click "Next" → "Finish"
 
 2. **Configurar JDK**:
+
    - File → Project Structure → Project → Project SDK → Java 21
    - Verificar que Maven esté configurado correctamente
 
@@ -292,12 +318,14 @@ logging.level.org.springframework.security=DEBUG
 ### 5. Ejecutar el Proyecto
 
 #### Desde IntelliJ IDEA:
+
 1. **Ejecutar la aplicación**:
    - Click derecho en `FoodVApplication.java`
    - Seleccionar "Run 'FoodVApplication'"
    - O usar el botón ▶️ verde en la barra de herramientas
 
 #### Desde Terminal:
+
 ```bash
 # Compilar y ejecutar
 mvn clean install
@@ -311,6 +339,7 @@ java -jar target/foodv-0.0.1-SNAPSHOT.jar
 #### Verificación de Ejecución:
 
 Deberías ver en la consola:
+
 ```
 Started FoodVApplication in X.XXX seconds (JVM running for X.XXX)
 Usuarios creados exitosamente
@@ -322,56 +351,67 @@ Productos creados exitosamente
 
 ### 🔐 Autenticación (Públicos)
 
-| Método | Endpoint | Descripción | Request Body |
-|--------|----------|-------------|--------------|
-| `POST` | `/api/auth/register` | Registro tradicional | `{"name": "string", "email": "string", "password": "string"}` |
-| `POST` | `/api/auth/login` | Login tradicional | `{"email": "string", "password": "string"}` |
-| `POST` | `/api/auth/register-ucv` | **Registro UCV** | `{"username": "string", "password": "string"}` |
-| `POST` | `/api/auth/verify-otp` | **Verificar OTP UCV** | `{"username": "string", "otpCode": "string"}` |
-| `POST` | `/api/auth/login-username` | **Login con username** | `{"usernameOrEmail": "string", "password": "string"}` |
+| Método | Endpoint                   | Descripción            | Request Body                                                  |
+| ------ | -------------------------- | ---------------------- | ------------------------------------------------------------- |
+| `POST` | `/api/auth/register`       | Registro tradicional   | `{"name": "string", "email": "string", "password": "string"}` |
+| `POST` | `/api/auth/login`          | Login tradicional      | `{"email": "string", "password": "string"}`                   |
+| `POST` | `/api/auth/register-ucv`   | **Registro UCV**       | `{"username": "string", "password": "string"}`                |
+| `POST` | `/api/auth/verify-otp`     | **Verificar OTP UCV**  | `{"username": "string", "otpCode": "string"}`                 |
+| `POST` | `/api/auth/login-username` | **Login con username** | `{"usernameOrEmail": "string", "password": "string"}`         |
+| `POST` | `/api/auth/logout`         | **Cerrar sesión**      | -                                                             |
 
 ### 👤 Usuarios (Protegidos)
 
-| Método | Endpoint | Descripción | Headers |
-|--------|----------|-------------|---------|
-| `GET` | `/api/users/profile` | Obtener perfil del usuario | `Authorization: Bearer {token}` |
+| Método | Endpoint             | Descripción                | Headers                         |
+| ------ | -------------------- | -------------------------- | ------------------------------- |
+| `GET`  | `/api/users/profile` | Obtener perfil del usuario | `Authorization: Bearer {token}` |
 
 ### 🏪 Tiendas (Públicos)
 
-| Método | Endpoint | Descripción | Parámetros |
-|--------|----------|-------------|------------|
-| `GET` | `/api/stores` | Listar todas las tiendas | - |
-| `GET` | `/api/stores/{id}` | Obtener tienda por ID | `id` (Long) |
-| `GET` | `/api/stores/type/{type}` | Listar tiendas por tipo | `type` (MINIMARKET, DULCERIA, EMPRENDEDOR) |
+| Método | Endpoint                  | Descripción              | Parámetros                                 |
+| ------ | ------------------------- | ------------------------ | ------------------------------------------ |
+| `GET`  | `/api/stores`             | Listar todas las tiendas | -                                          |
+| `GET`  | `/api/stores/{id}`        | Obtener tienda por ID    | `id` (Long)                                |
+| `GET`  | `/api/stores/type/{type}` | Listar tiendas por tipo  | `type` (MINIMARKET, DULCERIA, EMPRENDEDOR) |
 
 ### 🛍️ Productos (Públicos)
 
-| Método | Endpoint | Descripción | Parámetros |
-|--------|----------|-------------|------------|
-| `GET` | `/api/products` | Listar todos los productos | - |
-| `GET` | `/api/products/{id}` | Obtener producto por ID | `id` (Long) |
-| `GET` | `/api/products/store/{storeId}` | Listar productos de una tienda | `storeId` (Long) |
-| `GET` | `/api/products/search` | Buscar productos | `q` (String) |
-| `GET` | `/api/products/store/{storeId}/search` | Buscar productos en una tienda | `storeId` (Long), `q` (String) |
+| Método | Endpoint                               | Descripción                    | Parámetros                     |
+| ------ | -------------------------------------- | ------------------------------ | ------------------------------ |
+| `GET`  | `/api/products`                        | Listar todos los productos     | -                              |
+| `GET`  | `/api/products/{id}`                   | Obtener producto por ID        | `id` (Long)                    |
+| `GET`  | `/api/products/store/{storeId}`        | Listar productos de una tienda | `storeId` (Long)               |
+| `GET`  | `/api/products/search`                 | Buscar productos               | `q` (String)                   |
+| `GET`  | `/api/products/store/{storeId}/search` | Buscar productos en una tienda | `storeId` (Long), `q` (String) |
 
 ### 🛒 Carrito (Protegidos)
 
-| Método | Endpoint | Descripción | Headers | Request Body |
-|--------|----------|-------------|---------|--------------|
-| `GET` | `/api/cart` | Obtener carrito del usuario | `Authorization: Bearer {token}` | - |
-| `POST` | `/api/cart/add` | Agregar producto al carrito | `Authorization: Bearer {token}` | `{"productId": Long, "quantity": Integer}` |
-| `PUT` | `/api/cart/items/{itemId}` | Actualizar cantidad de item | `Authorization: Bearer {token}` | `{"quantity": Integer}` |
-| `DELETE` | `/api/cart/items/{itemId}` | Eliminar item del carrito | `Authorization: Bearer {token}` | - |
-| `DELETE` | `/api/cart/clear` | Vaciar carrito | `Authorization: Bearer {token}` | - |
+| Método   | Endpoint                   | Descripción                 | Headers                         | Request Body                               |
+| -------- | -------------------------- | --------------------------- | ------------------------------- | ------------------------------------------ |
+| `GET`    | `/api/cart`                | Obtener carrito del usuario | `Authorization: Bearer {token}` | -                                          |
+| `POST`   | `/api/cart/add`            | Agregar producto al carrito | `Authorization: Bearer {token}` | `{"productId": Long, "quantity": Integer}` |
+| `PUT`    | `/api/cart/items/{itemId}` | Actualizar cantidad de item | `Authorization: Bearer {token}` | `{"quantity": Integer}`                    |
+| `DELETE` | `/api/cart/items/{itemId}` | Eliminar item del carrito   | `Authorization: Bearer {token}` | -                                          |
+| `DELETE` | `/api/cart/clear`          | Vaciar carrito              | `Authorization: Bearer {token}` | -                                          |
 
 ### 📦 Pedidos (Protegidos)
 
-| Método | Endpoint | Descripción | Headers | Request Body |
-|--------|----------|-------------|---------|--------------|
-| `POST` | `/api/orders` | Crear pedido | `Authorization: Bearer {token}` | `{"pabellon": "string", "piso": "string", "salon": "string", "notes": "string"}` |
-| `GET` | `/api/orders` | Listar pedidos del usuario | `Authorization: Bearer {token}` | - |
-| `GET` | `/api/orders/{orderId}` | Obtener pedido por ID | `Authorization: Bearer {token}` | - |
-| `GET` | `/api/orders/status/{status}` | Listar pedidos por estado | `Authorization: Bearer {token}` | - |
+| Método | Endpoint                                     | Descripción                    | Headers                         | Request Body                                                                                                                            |
+| ------ | -------------------------------------------- | ------------------------------ | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST` | `/api/orders`                                | Crear pedido                   | `Authorization: Bearer {token}` | `{"pabellon": "string", "piso": "string", "salon": "string", "deliveryMethod": "string", "paymentMethod": "string", "notes": "string"}` |
+| `GET`  | `/api/orders`                                | Listar pedidos del usuario     | `Authorization: Bearer {token}` | -                                                                                                                                       |
+| `GET`  | `/api/orders/{orderId}`                      | Obtener pedido por ID          | `Authorization: Bearer {token}` | -                                                                                                                                       |
+| `GET`  | `/api/orders/status/{status}`                | Listar pedidos por estado      | `Authorization: Bearer {token}` | -                                                                                                                                       |
+| `POST` | `/api/orders/{orderId}/confirm-cash-payment` | **Confirmar pago en efectivo** | `Authorization: Bearer {token}` | -                                                                                                                                       |
+
+### 🏫 Campus (Públicos)
+
+| Método | Endpoint                                    | Descripción                  | Parámetros            |
+| ------ | ------------------------------------------- | ---------------------------- | --------------------- |
+| `GET`  | `/api/campus/map`                           | **Mapa completo del campus** | -                     |
+| `GET`  | `/api/campus/pabellones`                    | **Lista de pabellones**      | -                     |
+| `GET`  | `/api/campus/pabellones/{pabellonId}/aulas` | **Aulas por pabellón**       | `pabellonId` (String) |
+| `GET`  | `/api/campus/puntos-entrega`                | **Puntos de entrega**        | -                     |
 
 ## 🧪 Datos de Prueba
 
@@ -379,20 +419,20 @@ El sistema incluye datos de prueba que se cargan automáticamente al iniciar la 
 
 ### 👥 Usuarios de Prueba
 
-| Email | Contraseña | Rol | Descripción |
-|-------|------------|-----|-------------|
-| `admin@ucv.edu.pe` | `admin123` | ADMIN | Administrador del sistema |
-| `juan.perez@ucv.edu.pe` | `password123` | CLIENTE | Usuario de prueba 1 |
-| `maria.garcia@ucv.edu.pe` | `password123` | CLIENTE | Usuario de prueba 2 |
+| Email                     | Contraseña    | Rol     | Descripción               |
+| ------------------------- | ------------- | ------- | ------------------------- |
+| `admin@ucv.edu.pe`        | `admin123`    | ADMIN   | Administrador del sistema |
+| `juan.perez@ucv.edu.pe`   | `password123` | CLIENTE | Usuario de prueba 1       |
+| `maria.garcia@ucv.edu.pe` | `password123` | CLIENTE | Usuario de prueba 2       |
 
 ### 🏪 Tiendas de Prueba
 
-| Nombre | Tipo | Descripción | Productos |
-|--------|------|-------------|-----------|
-| **Listo** | MINIMARKET | Productos básicos para estudiantes | Agua, Gaseosa, Galletas, Chicle, Café |
-| **Fresco** | DULCERIA | Snacks y golosinas | Chocolate, Caramelos, Gomitas, Helado |
-| **Café del Estudiante** | EMPRENDEDOR | Café y snacks preparados | Café Americano, Café con Leche, Sandwich, Empanada |
-| **Snacks Saludables** | EMPRENDEDOR | Productos orgánicos y saludables | Ensalada de Frutas, Yogurt, Barra Energética, Jugo Natural |
+| Nombre                  | Tipo        | Descripción                        | Productos                                                  |
+| ----------------------- | ----------- | ---------------------------------- | ---------------------------------------------------------- |
+| **Listo**               | MINIMARKET  | Productos básicos para estudiantes | Agua, Gaseosa, Galletas, Chicle, Café                      |
+| **Fresco**              | DULCERIA    | Snacks y golosinas                 | Chocolate, Caramelos, Gomitas, Helado                      |
+| **Café del Estudiante** | EMPRENDEDOR | Café y snacks preparados           | Café Americano, Café con Leche, Sandwich, Empanada         |
+| **Snacks Saludables**   | EMPRENDEDOR | Productos orgánicos y saludables   | Ensalada de Frutas, Yogurt, Barra Energética, Jugo Natural |
 
 ## 📮 Pruebas con Postman
 
@@ -418,11 +458,12 @@ Content-Type: application/json
 ```
 
 **Respuesta esperada:**
+
 ```json
 {
-    "success": true,
-    "message": "Proceso iniciado",
-    "data": "Código de verificación enviado a XMONTANOGA@ucvvirtual.edu.pe"
+  "success": true,
+  "message": "Proceso iniciado",
+  "data": "Código de verificación enviado a XMONTANOGA@ucvvirtual.edu.pe"
 }
 ```
 
@@ -439,18 +480,19 @@ Content-Type: application/json
 ```
 
 **Respuesta esperada:**
+
 ```json
 {
-    "success": true,
-    "message": "Registro completado exitosamente",
-    "data": {
-        "token": "eyJhbGciOiJIUzI1NiJ9...",
-        "type": "Bearer",
-        "id": 5,
-        "name": "XMONTANOGA",
-        "email": "XMONTANOGA@ucvvirtual.edu.pe",
-        "role": "CLIENTE"
-    }
+  "success": true,
+  "message": "Registro completado exitosamente",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiJ9...",
+    "type": "Bearer",
+    "id": 5,
+    "name": "XMONTANOGA",
+    "email": "XMONTANOGA@ucvvirtual.edu.pe",
+    "role": "CLIENTE"
+  }
 }
 ```
 
@@ -683,75 +725,99 @@ SERVER_PORT=8080
 ## 🐛 Solución de Problemas
 
 ### Error de Conexión a Base de Datos
+
 ```
 org.postgresql.util.PSQLException: FATAL: password authentication failed
 ```
-**Solución**: 
+
+**Solución**:
+
 - Verificar que PostgreSQL esté ejecutándose
 - Verificar credenciales en `application.properties`
 - Verificar que la base de datos `foodv_db` exista
 
 ### Error de Autenticación de Email
+
 ```
 Authentication failed
 ```
-**Solución**: 
+
+**Solución**:
+
 - Verificar que las variables de entorno `MAIL_USERNAME` y `MAIL_PASSWORD` estén configuradas
 - Verificar que la contraseña de aplicación de Gmail sea correcta (16 caracteres sin espacios)
 - Verificar que la autenticación de 2 factores esté habilitada en Gmail
 
 ### Error de Validación de Username UCV
+
 ```
 El nombre de usuario debe contener solo letras mayúsculas y números
 ```
-**Solución**: 
+
+**Solución**:
+
 - Usar solo letras mayúsculas y números (ej: `XMONTANOGA`)
 - No usar caracteres especiales o espacios
 - Longitud entre 3 y 20 caracteres
 
 ### Error de Validación de Contraseña
+
 ```
 La contraseña debe contener al menos: 8 caracteres, una letra minúscula, una mayúscula, un número y un símbolo
 ```
-**Solución**: 
+
+**Solución**:
+
 - Mínimo 8 caracteres
-- Incluir al menos: una minúscula, una mayúscula, un número y un símbolo (@$!%*?&)
+- Incluir al menos: una minúscula, una mayúscula, un número y un símbolo (@$!%\*?&)
 - Ejemplo válido: `MiPassword123!`
 
 ### Error de OTP Expirado
+
 ```
 Código OTP inválido o expirado
 ```
-**Solución**: 
+
+**Solución**:
+
 - El código OTP expira en 10 minutos
 - Solicitar un nuevo código con `/api/auth/register-ucv`
 - Verificar que el código sea exactamente de 6 dígitos
 
 ### Error 401 Unauthorized
+
 ```
 {"success":false,"message":"Acceso denegado"}
 ```
-**Solución**: 
+
+**Solución**:
+
 - Verificar que el token JWT sea válido
 - Verificar que el header `Authorization: Bearer {token}` esté presente
 - Verificar que el token no haya expirado
 - Hacer login nuevamente para obtener un token fresco
 
 ### Error 500 Internal Server Error
+
 ```
 {"success":false,"message":"Error interno del servidor"}
 ```
-**Solución**: 
+
+**Solución**:
+
 - Verificar logs en la consola de IntelliJ para más detalles
 - Verificar que la base de datos esté accesible
 - Verificar que todas las dependencias estén instaladas
 - Verificar configuración de email
 
 ### Error de Puerto en Uso
+
 ```
 Port 8080 was already in use
 ```
-**Solución**: 
+
+**Solución**:
+
 - Cambiar el puerto en `application.properties`: `server.port=8081`
 - O matar el proceso que usa el puerto 8080
 
@@ -762,6 +828,7 @@ Port 8080 was already in use
 - `GET /api/debug/otp-status` - Estado de los códigos OTP almacenados
 
 ### Logging Recomendado
+
 ```properties
 # Logging detallado para desarrollo
 logging.level.pe.ucv.foodv=DEBUG
@@ -778,6 +845,7 @@ logging.level.org.hibernate.SQL=WARN
 ## 🤝 Contribución
 
 ### Cómo Contribuir
+
 1. Fork el proyecto
 2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
 3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
@@ -785,6 +853,7 @@ logging.level.org.hibernate.SQL=WARN
 5. Abrir un Pull Request
 
 ### Estándares de Código
+
 - Seguir las convenciones de Java
 - Documentar métodos públicos
 - Escribir tests unitarios
@@ -810,9 +879,29 @@ Para soporte técnico o consultas sobre el proyecto:
 
 ---
 
+## 🔧 Correcciones Implementadas (Última Actualización)
+
+### Problemas del Frontend Solucionados en el Backend
+
+| Problema                                     | Solución Implementada                   | Endpoint                                                 |
+| -------------------------------------------- | --------------------------------------- | -------------------------------------------------------- |
+| **Login con username no funciona**           | Backend ya soporta `usernameOrEmail`    | `POST /api/auth/login-username`                          |
+| **Falta flujo de logout**                    | Agregado endpoint de logout             | `POST /api/auth/logout`                                  |
+| **Pago en efectivo va al payment simulator** | Endpoint para confirmar pago directo    | `POST /api/orders/{id}/confirm-cash-payment`             |
+| **Falta registro**                           | Endpoints de registro funcionando       | `POST /api/auth/register`, `POST /api/auth/register-ucv` |
+| **Falta Campus Map**                         | Sistema completo de campus implementado | `GET /api/campus/*`                                      |
+
+### Nuevas Funcionalidades
+
+- **🏫 Campus Map**: Sistema completo de mapeo del campus UCV
+- **💰 Pago en Efectivo**: Flujo especial sin payment simulator
+- **🚪 Logout**: Endpoint para cerrar sesión
+- **📚 Documentación**: Swagger UI actualizado con todos los endpoints
+
 ## 🎯 Roadmap Futuro
 
 ### Próximas Características
+
 - [ ] **Notificaciones Push**: Integración con Firebase Cloud Messaging
 - [ ] **Pagos**: Integración con pasarelas de pago
 - [ ] **Geolocalización**: Tracking de pedidos en tiempo real
@@ -823,6 +912,7 @@ Para soporte técnico o consultas sobre el proyecto:
 - [ ] **Multi-idioma**: Soporte para múltiples idiomas
 
 ### Mejoras Técnicas
+
 - [ ] **Redis**: Cache para mejorar rendimiento
 - [ ] **RabbitMQ**: Cola de mensajes para notificaciones
 - [ ] **Docker**: Containerización de la aplicación
